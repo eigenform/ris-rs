@@ -1,0 +1,16 @@
+[package]
+name = "ris-rs"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+tungstenite = "0.17.2"
+url         = "2.2.2"
+serde       = { version="1.0.136", features=["derive"] }
+serde_json  = "1.0.79"
+ipnet       = "2.3.1"
+itertools   = "0.10.3"
+
+#[[bin]]
+#name = "simple"
+#path = "bin/simple.rs"
