@@ -97,10 +97,22 @@ impl BGPUpdate {
                 let data = BGPUpdateType::Announce {
                     path: p.to_owned(),
                     vectors: a.iter().map(|e| {
+                        // NOTE: Sometimes we get comma-separated addresses?
+                        // Just take the first one?
+                        let nh_split: String = e.next_hop.split(",").take(1)
+                            .collect();
+
                         AnnouncementVector {
-                            next_hop: e.next_hop.parse().unwrap(),
+                            next_hop: match nh_split.parse::<IpAddr>() {
+                                Ok(res) => res,
+                                Err(err) => panic!("err: {}, string: {}", err, e.next_hop),
+                            },
                             prefixes: e.prefixes.iter().map(|s| { 
-                                s.parse().unwrap() }).collect(),
+                                match s.parse::<IpNet>() {
+                                    Ok(res) => res,
+                                    Err(e) => panic!("err: {}, string: {}", e, s),
+                                }
+                            }).collect(),
                         }
                     }).collect(),
                 };
@@ -110,10 +122,22 @@ impl BGPUpdate {
                     kind: BGPUpdateType::Announce {
                         path: p.to_owned(),
                         vectors: a.iter().map(|e| {
+                            // NOTE: Sometimes we get comma-separated addresses?
+                            // Just take the first one?
+                            let nh_split: String = e.next_hop.split(",").take(1)
+                                .collect();
+
                             AnnouncementVector {
-                                next_hop: e.next_hop.parse().unwrap(),
+                                next_hop: match nh_split.parse::<IpAddr>() {
+                                    Ok(res) => res,
+                                    Err(err) => panic!("err: {}, string: {}", err, e.next_hop),
+                                },
                                 prefixes: e.prefixes.iter().map(|s| {
-                                    s.parse().unwrap() }).collect(),
+                                    match s.parse::<IpNet>() {
+                                        Ok(res) => res,
+                                        Err(e) => panic!("err: {}, string: {}", e, s),
+                                    }
+                                }).collect(),
                             }
                         }).collect(),
                     },
